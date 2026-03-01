@@ -1,65 +1,112 @@
-import Image from "next/image";
+const steps = [
+  {
+    description:
+      "Click the button above to deploy this template to your Vercel account.",
+    title: "Deploy to Vercel",
+  },
+  {
+    description:
+      "Create a GitHub App with pull_request and issue_comment webhook permissions, then add the credentials to your environment variables.",
+    title: "Connect a GitHub App",
+  },
+  {
+    description:
+      "OpenReview automatically reviews PRs when opened or when you mention @openreview in a comment.",
+    title: "Get AI reviews",
+  },
+];
 
-export default function Home() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
+const features = [
+  "Automated reviews on every PR",
+  "Mention @openreview for on-demand reviews",
+  "Runs in a sandboxed environment with full repo access",
+  "Powered by Claude via the AI SDK",
+  "Built on Vercel Workflow for durable execution",
+];
+
+const Page = () => (
+  <div className="flex min-h-screen items-center justify-center bg-white dark:bg-zinc-950">
+    <main className="flex w-full max-w-xl flex-col gap-16 px-6 py-24">
+      <div className="flex flex-col gap-6">
+        <p className="font-mono text-sm tracking-wider text-zinc-400 uppercase dark:text-zinc-500">
+          Vercel Template
+        </p>
+        <h1 className="text-4xl leading-tight font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">
+          OpenReview
+        </h1>
+        <p className="text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
+          An open-source, self-hosted AI code review bot. Deploy to Vercel,
+          connect a GitHub App, and get automated PR reviews powered by Claude.
+        </p>
+        <div className="flex gap-3">
           <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-zinc-950 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-zinc-200"
+            href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fhaydenbleasel%2Fopenreview"
             rel="noopener noreferrer"
+            target="_blank"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
+            <svg
+              className="size-4"
+              fill="currentColor"
+              viewBox="0 0 76 65"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M37.5274 0L75.0548 65H0L37.5274 0Z" />
+            </svg>
+            Deploy to Vercel
           </a>
           <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
+            className="inline-flex h-10 items-center justify-center rounded-lg border border-zinc-200 px-4 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-900"
+            href="https://github.com/haydenbleasel/openreview"
             rel="noopener noreferrer"
+            target="_blank"
           >
-            Documentation
+            GitHub
           </a>
         </div>
-      </main>
-    </div>
-  );
-}
+      </div>
+
+      <div className="flex flex-col gap-4">
+        <h2 className="text-sm font-medium tracking-wider text-zinc-400 uppercase dark:text-zinc-500">
+          How it works
+        </h2>
+        <ol className="flex flex-col gap-6">
+          {steps.map((step, index) => (
+            <li className="flex gap-4" key={step.title}>
+              <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-zinc-100 font-mono text-xs font-medium text-zinc-500 dark:bg-zinc-900 dark:text-zinc-400">
+                {index + 1}
+              </span>
+              <div className="flex flex-col gap-1">
+                <p className="text-sm font-medium text-zinc-950 dark:text-zinc-50">
+                  {step.title}
+                </p>
+                <p className="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
+                  {step.description}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <div className="flex flex-col gap-4">
+        <h2 className="text-sm font-medium tracking-wider text-zinc-400 uppercase dark:text-zinc-500">
+          Features
+        </h2>
+        <ul className="flex flex-col gap-2">
+          {features.map((feature) => (
+            <li
+              className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400"
+              key={feature}
+            >
+              <span className="text-zinc-300 dark:text-zinc-700">&mdash;</span>
+              {feature}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </main>
+  </div>
+);
+
+export default Page;
