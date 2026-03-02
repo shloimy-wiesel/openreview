@@ -8,7 +8,6 @@ import { commitAndPush } from "./steps/commit-and-push";
 import { configureGit } from "./steps/configure-git";
 import { createSandbox } from "./steps/create-sandbox";
 import { extendSandbox } from "./steps/extend-sandbox";
-import { getDiff } from "./steps/get-diff";
 import { getGitHubToken } from "./steps/get-github-token";
 import { hasUncommittedChanges } from "./steps/has-uncommitted-changes";
 import { installDependencies } from "./steps/install-dependencies";
@@ -61,10 +60,8 @@ Please ensure the OpenReview app has access to this repository and branch.
     await configureGit(sandboxId, repoFullName, token);
     await extendSandbox(sandboxId);
 
-    const diff = await getDiff(sandboxId, baseBranch);
     const agentResult = await runAgent(
       sandboxId,
-      diff,
       messages,
       threadId,
       prNumber,

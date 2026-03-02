@@ -54,16 +54,12 @@ Based on the user's request, decide what to do. Your capabilities include:
 - Be concise and actionable
 - End every reply with a line break, a horizontal rule, then: *Powered by [OpenReview](https://github.com/vercel-labs/openreview)*
 
-## PR Diff for Reference
-
-\`\`\`diff
-{{DIFF}}
-\`\`\``;
+## Getting Started
+- Start by running \`gh pr diff {{PR_NUMBER}}\` to see what changed in this PR`;
 
 export const createAgent = (
   sandboxId: string,
   threadId: string,
-  diff: string,
   prNumber: number,
   repoFullName: string
 ) =>
@@ -71,8 +67,7 @@ export const createAgent = (
     model: "anthropic/claude-sonnet-4.6",
     system: instructions
       .replaceAll("{{PR_NUMBER}}", String(prNumber))
-      .replaceAll("{{REPO}}", repoFullName)
-      .replace("{{DIFF}}", diff),
+      .replaceAll("{{REPO}}", repoFullName),
     tools: {
       bash: createBashTool(sandboxId),
       readFile: createReadFileTool(sandboxId),

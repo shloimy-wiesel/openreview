@@ -14,7 +14,6 @@ export interface AgentResult {
 
 export const runAgent = async (
   sandboxId: string,
-  diff: string,
   threadMessages: ThreadMessage[],
   threadId: string,
   prNumber: number,
@@ -23,13 +22,7 @@ export const runAgent = async (
   try {
     await startTyping(threadId, "Reviewing...");
 
-    const agent = createAgent(
-      sandboxId,
-      threadId,
-      diff,
-      prNumber,
-      repoFullName
-    );
+    const agent = createAgent(sandboxId, threadId, prNumber, repoFullName);
 
     await agent.stream({
       maxSteps: 20,
