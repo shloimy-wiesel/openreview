@@ -52,6 +52,17 @@ export const DeployButton = () => {
     "https://github.com/vercel-labs/openreview"
   );
 
+  // Environment variables
+  url.searchParams.set(
+    "env",
+    [
+      "GITHUB_APP_ID",
+      "GITHUB_APP_INSTALLATION_ID",
+      "GITHUB_APP_PRIVATE_KEY",
+      "GITHUB_APP_WEBHOOK_SECRET",
+    ].join(",")
+  );
+
   // Integrations
   url.searchParams.set(
     "products",

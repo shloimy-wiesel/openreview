@@ -4,7 +4,6 @@ import { z } from "zod";
 export const env = createEnv({
   experimental__runtimeEnv: {},
   server: {
-    ANTHROPIC_API_KEY: z.string().min(1),
     GITHUB_APP_ID: z.string().min(1),
     GITHUB_APP_INSTALLATION_ID: z.coerce.number().int().positive(),
     GITHUB_APP_PRIVATE_KEY: z.string().min(1),
