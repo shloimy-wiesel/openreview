@@ -2,9 +2,10 @@ import type { UIMessageChunk } from "ai";
 import { getWritable } from "workflow";
 
 import { createAgent } from "@/lib/agent";
-import { bot } from "@/lib/bot";
 import { parseError } from "@/lib/error";
 import type { ThreadMessage } from "@/workflow";
+
+import { startTyping } from "./start-typing";
 
 export interface AgentResult {
   errorMessage?: string;
@@ -20,8 +21,7 @@ export const runAgent = async (
   repoFullName: string
 ): Promise<AgentResult> => {
   try {
-    const adapter = bot.getAdapter("github");
-    await adapter.startTyping(threadId, "Reviewing...");
+    await startTyping(threadId, "Reviewing...");
 
     const agent = createAgent(
       sandboxId,

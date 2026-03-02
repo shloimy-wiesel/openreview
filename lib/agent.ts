@@ -3,8 +3,8 @@ import { DurableAgent } from "@workflow/ai/agent";
 import { tool } from "ai";
 import { z } from "zod";
 
-import { bot } from "@/lib/bot";
 import { parseError } from "@/lib/error";
+import { addPRComment } from "@/workflow/steps/add-pr-comment";
 
 const instructions = `You are an expert software engineering assistant working inside a sandbox with a git repository checked out on a PR branch.
 
@@ -63,16 +63,6 @@ Based on the user's request, decide what to do. Your capabilities include:
 
 const SANDBOX_CWD = "./workspace";
 
-const getSandbox = async (sandboxId: string) => {
-  const sandbox = await Sandbox.get({ sandboxId }).catch((error: unknown) => {
-    throw new Error(`Failed to re-acquire sandbox: ${parseError(error)}`, {
-      cause: error,
-    });
-  });
-
-  return sandbox;
-};
-
 const createBashTool = (sandboxId: string) =>
   tool({
     description: [
@@ -90,7 +80,7 @@ const createBashTool = (sandboxId: string) =>
     execute: async ({ command }) => {
       "use step";
 
-      const sandbox = await getSandbox(sandboxId);
+      const sandbox = await Sandbox.get({ sandboxId });
       const fullCommand = `cd "${SANDBOX_CWD}" && ${command}`;
       const result = await sandbox.runCommand("bash", ["-c", fullCommand]);
       const [stdout, stderr] = await Promise.all([
@@ -111,7 +101,7 @@ const createReadFileTool = (sandboxId: string) =>
     execute: async ({ path }) => {
       "use step";
 
-      const sandbox = await getSandbox(sandboxId);
+      const sandbox = await Sandbox.get({ sandboxId });
       const resolvedPath = path.startsWith("/")
         ? path
         : `${SANDBOX_CWD}/${path}`;
@@ -138,7 +128,7 @@ const createWriteFileTool = (sandboxId: string) =>
     execute: async ({ content, path }) => {
       "use step";
 
-      const sandbox = await getSandbox(sandboxId);
+      const sandbox = await Sandbox.get({ sandboxId });
       const resolvedPath = path.startsWith("/")
         ? path
         : `${SANDBOX_CWD}/${path}`;
@@ -156,15 +146,13 @@ const createWriteFileTool = (sandboxId: string) =>
   });
 
 const createReplyTool = (threadId: string) => {
-  const adapter = bot.getAdapter("github");
-
   return tool({
     description:
       "Post a comment on the pull request. Use this to share your findings, ask questions, or report results.",
     execute: async ({ body }) => {
       "use step";
 
-      await adapter.postMessage(threadId, { markdown: body });
+      await addPRComment(threadId, body);
       return { success: true };
     },
     inputSchema: z.object({

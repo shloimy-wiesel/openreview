@@ -13,7 +13,9 @@ import type { ThreadMessage, WorkflowParams } from "@/workflow";
 
 import { getInstallationOctokit } from "./github";
 
-const collectMessages = async (thread: Thread): Promise<ThreadMessage[]> => {
+const collectMessages = async (
+  thread: Thread<unknown, unknown>
+): Promise<ThreadMessage[]> => {
   const messages: ThreadMessage[] = [];
 
   for await (const msg of thread.allMessages) {
