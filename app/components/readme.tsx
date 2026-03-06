@@ -11,7 +11,11 @@ import "streamdown/styles.css";
 const plugins = { cjk, code, math, mermaid };
 
 export const Readme = ({ content }: { content: string }) => (
-  <Streamdown mode="static" plugins={plugins}>
+  <Streamdown
+    mode="static"
+    plugins={plugins}
+    linkSafety={{ enabled: false }}
+  >
     {content}
   </Streamdown>
 );
