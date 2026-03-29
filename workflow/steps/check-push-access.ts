@@ -2,6 +2,7 @@ import type { Octokit } from "octokit";
 
 import { parseError } from "@/lib/error";
 import { getInstallationOctokit } from "@/lib/github";
+import { checkGitLabProjectAccess } from "@/lib/gitlab";
 
 export interface PushAccessResult {
   canPush: boolean;
@@ -96,7 +97,7 @@ const checkBranchProtection = async (
   }
 };
 
-const runAccessChecks = async (
+const runGitHubAccessChecks = async (
   octokit: Octokit,
   owner: string,
   repo: string,
@@ -122,9 +123,18 @@ const runAccessChecks = async (
 
 export const checkPushAccess = async (
   repoFullName: string,
-  branch: string
+  branch: string,
+  provider: "github" | "gitlab" = "github"
 ): Promise<PushAccessResult> => {
   "use step";
+
+  if (provider === "gitlab") {
+    return checkGitLabProjectAccess(repoFullName).catch((error: unknown) => {
+      throw new Error(
+        `[checkPushAccess] Failed to check GitLab access: ${parseError(error)}`
+      );
+    });
+  }
 
   const [owner, repo] = repoFullName.split("/");
 
@@ -134,5 +144,5 @@ export const checkPushAccess = async (
     );
   });
 
-  return runAccessChecks(octokit, owner, repo, branch);
+  return runGitHubAccessChecks(octokit, owner, repo, branch);
 };

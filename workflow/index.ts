@@ -9,6 +9,7 @@ import { configureGit } from "./steps/configure-git";
 import { createSandbox } from "./steps/create-sandbox";
 import { extendSandbox } from "./steps/extend-sandbox";
 import { getGitHubToken } from "./steps/get-github-token";
+import { getGitLabToken } from "./steps/get-gitlab-token";
 import { hasUncommittedChanges } from "./steps/has-uncommitted-changes";
 import { installDependencies } from "./steps/install-dependencies";
 import { runAgent } from "./steps/run-agent";
@@ -24,6 +25,7 @@ export interface WorkflowParams {
   messages: ThreadMessage[];
   prBranch: string;
   prNumber: number;
+  provider?: "github" | "gitlab";
   repoFullName: string;
   threadId: string;
 }
@@ -36,11 +38,12 @@ export const botWorkflow = async (params: WorkflowParams): Promise<void> => {
     messages,
     prBranch,
     prNumber,
+    provider = "github",
     repoFullName,
     threadId,
   } = params;
 
-  const pushAccess = await checkPushAccess(repoFullName, prBranch);
+  const pushAccess = await checkPushAccess(repoFullName, prBranch, provider);
 
   if (!pushAccess.canPush) {
     await addPRComment(
@@ -58,12 +61,14 @@ Please ensure the OpenReview app has access to this repository and branch.
     throw new FatalError(pushAccess.reason ?? "Push access denied");
   }
 
-  const token = await getGitHubToken();
-  const sandboxId = await createSandbox(repoFullName, token, prBranch);
+  const token =
+    provider === "gitlab" ? await getGitLabToken() : await getGitHubToken();
+
+  const sandboxId = await createSandbox(repoFullName, token, prBranch, provider);
 
   try {
-    await installDependencies(sandboxId);
-    await configureGit(sandboxId, repoFullName, token);
+    await installDependencies(sandboxId, provider);
+    await configureGit(sandboxId, repoFullName, token, provider);
     await extendSandbox(sandboxId);
 
     const agentResult = await runAgent(
@@ -71,7 +76,8 @@ Please ensure the OpenReview app has access to this repository and branch.
       messages,
       threadId,
       prNumber,
-      repoFullName
+      repoFullName,
+      provider
     );
 
     if (!agentResult.success) {

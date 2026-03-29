@@ -18,7 +18,8 @@ export const runAgent = async (
   threadMessages: ThreadMessage[],
   threadId: string,
   prNumber: number,
-  repoFullName: string
+  repoFullName: string,
+  provider: "github" | "gitlab" = "github"
 ): Promise<AgentResult> => {
   try {
     await startTyping(threadId, "Reviewing...");
@@ -30,7 +31,8 @@ export const runAgent = async (
       threadId,
       prNumber,
       repoFullName,
-      skills
+      skills,
+      provider
     );
 
     await agent.stream({

@@ -6,6 +6,11 @@ export const startTyping = async (
 ): Promise<void> => {
   "use step";
 
+  // GitLab doesn't have a typing indicator - skip
+  if (threadId.startsWith("gitlab:")) {
+    return;
+  }
+
   const bot = await getBot();
   const adapter = bot.getAdapter("github");
   await adapter.startTyping(threadId, text);
